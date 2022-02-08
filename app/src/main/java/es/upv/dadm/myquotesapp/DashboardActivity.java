@@ -33,7 +33,7 @@ public class DashboardActivity extends AppCompatActivity {
             intent = new Intent(DashboardActivity.this, MainActivity.class);
             //intent.putExtra(Util.LAYOUT, Util.HORIZONTAL);
         } else if (buttonClicked == R.id.b_settings) {
-            intent = new Intent(DashboardActivity.this, MainActivity.class);
+            intent = new Intent(DashboardActivity.this, SettingsActivity.class);
             //intent.putExtra(Util.LAYOUT, Util.NESTED);
         } else { // (buttonClicked == R.id.b_about)
             intent = new Intent(DashboardActivity.this, AboutActivity.class);

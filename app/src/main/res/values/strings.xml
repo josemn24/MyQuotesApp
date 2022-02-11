@@ -21,4 +21,7 @@
     <string name="settings_radio_get">GET</string>
     <string name="settings_radio_post">POST</string>
 
+    <string name="language_english">English</string>
+    <string name="language_russian">Russian</string>
+
 </resources>

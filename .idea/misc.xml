@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Genis/source/repos/MyQuotesApp/app/src/main/res/layout-land/activity_dashboard.xml" value="0.31040564373897706" />
         <entry key="..\:/Users/Genis/source/repos/MyQuotesApp/app/src/main/res/layout/activity_dashboard.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Genis/source/repos/MyQuotesApp/app/src/main/res/layout/activity_favourite.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Genis/source/repos/MyQuotesApp/app/src/main/res/layout/activity_quotation.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.2572463768115942" />
         <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.2572463768115942" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.20567375886524822" />

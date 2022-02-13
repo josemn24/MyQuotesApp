@@ -27,7 +27,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void testLayout(int buttonClicked) {
         Intent intent;
         if (buttonClicked == R.id.b_get_quotations) {
-            intent = new Intent(DashboardActivity.this, MainActivity.class);
+            intent = new Intent(DashboardActivity.this, QuotationActivity.class);
             //intent.putExtra(Util.LAYOUT, Util.VERTICAL);
         } else if (buttonClicked == R.id.b_favourite_quotations) {
             intent = new Intent(DashboardActivity.this, FavouriteActivity.class);

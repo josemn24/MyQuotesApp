@@ -21,6 +21,8 @@
     <string name="settings_radio_get">GET</string>
     <string name="settings_radio_post">POST</string>
 
+    <string name="favourite_text_view_1">Author info</string>
+
     <string name="language_english">English</string>
     <string name="language_russian">Russian</string>
 

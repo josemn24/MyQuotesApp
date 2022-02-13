@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyQuotesApp</string>
+    <string name="app_name" translatable="false">MyQuotesApp</string>
 
     <string name="get_quotations">Get quotations</string>
     <string name="favourite_quotations">Favourite quotations</string>
@@ -18,12 +18,18 @@
     <string name="settings_edit_text_1">Insert your name</string>
     <string name="settings_text_view_2">Get quotations in the selected language</string>
     <string name="settings_text_view_3">Request quotations using the selected HTTP method</string>
-    <string name="settings_radio_get">GET</string>
-    <string name="settings_radio_post">POST</string>
+    <string name="settings_radio_get" translatable="false">GET</string>
+    <string name="settings_radio_post" translatable="false">POST</string>
 
     <string name="favourite_text_view_1">Author info</string>
 
+    <string name="quotation_text_view_1">Hello %1s!\nPress Refresh to get a new quotation</string>
+    <string name="quotation_text_view_2">This is a sample quotation</string>
+    <string name="quotation_text_view_3">Sample autor</string>
+
     <string name="language_english">English</string>
     <string name="language_russian">Russian</string>
+
+
 
 </resources>

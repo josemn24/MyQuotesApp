@@ -1,4 +1,4 @@
-package es.upv.dadm.myquotesapp;
+package es.upv.dadm.myquotesapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import java.util.List;
+
+import es.upv.dadm.myquotesapp.R;
 
 public class FavouriteActivity extends AppCompatActivity {
 

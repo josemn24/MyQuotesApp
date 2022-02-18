@@ -15,10 +15,16 @@ import es.upv.dadm.myquotesapp.pojo.Quotation;
 
 public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotesAdapter.ViewHolder> {
 
-    private List<Quotation> listQuotes;
+    public interface OnItemClickListener {
+        void onItemClick(Quotation quotation);
+    }
 
-    public FavouriteQuotesAdapter(List<Quotation> list) {
+    private List<Quotation> listQuotes;
+    private OnItemClickListener clickListener;
+
+    public FavouriteQuotesAdapter(List<Quotation> list, OnItemClickListener listener) {
         this.listQuotes = list;
+        this.clickListener = listener;
     }
 
     @NonNull
@@ -41,16 +47,29 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         return listQuotes.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public Quotation getItem(int position) {
+        return listQuotes.get(position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView tvQuote;
         public TextView tvAuthor;
 
         public ViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
             tvQuote = view.findViewById(R.id.txtQuote);
             tvAuthor = view.findViewById(R.id.txtAuthor);
         }
+
+        @Override
+        public void onClick(View v) {
+
+            clickListener.onItemClick(getItem(getAdapterPosition()));
+
+        }
+
     }
 
 }

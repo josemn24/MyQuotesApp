@@ -43,10 +43,31 @@ public class FavouriteActivity extends AppCompatActivity {
         recycler.addItemDecoration(divider);
 
         List<Quotation> data = getMockQuotations();
-        FavouriteQuotesAdapter adapter = new FavouriteQuotesAdapter(data);
+
+        FavouriteQuotesAdapter adapter = new FavouriteQuotesAdapter(data, new FavouriteQuotesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Quotation quotation) {
+                redirectToWikipedia(quotation);
+            }
+        });
+
+
         recycler.setAdapter(adapter);
 
         //findViewById(R.id.b_author_information).setOnClickListener(listener);
+    }
+
+    public void redirectToWikipedia(Quotation quotation) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        String uri = "https://en.wikipedia.org/wiki/Special:Search?search=" + quotation.getQuoteAuthor();
+        intent.setData(Uri.parse(uri));
+
+        List<ResolveInfo> activities =
+                getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (activities.size() > 0) {
+            startActivity(intent);
+        }
     }
 
     public void onClick() {

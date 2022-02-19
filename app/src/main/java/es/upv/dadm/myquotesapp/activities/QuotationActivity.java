@@ -1,4 +1,4 @@
-package es.upv.dadm.myquotesapp;
+package es.upv.dadm.myquotesapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
+
+import es.upv.dadm.myquotesapp.R;
 
 public class QuotationActivity extends AppCompatActivity {
 

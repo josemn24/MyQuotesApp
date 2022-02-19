@@ -21,4 +21,7 @@
     <string name="quotation_text_view_1">Hola %1s![...]</string>
     <string name="quotation_text_view_2">Esto es una cita de ejemplo</string>
     <string name="quotation_text_view_3">Ejemplo de autor</string>
+    <string name="favourite_dialog_message">¿Estás seguro de eliminar esta cita?</string>
+    <string name="favourite_dialog_yes">Sí</string>
+    <string name="favourite_dialog_no">No</string>
 </resources>

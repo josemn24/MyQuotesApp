@@ -19,12 +19,16 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         void onItemClick(Quotation quotation);
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+
     private List<Quotation> listQuotes;
     private OnItemClickListener clickListener;
+    private OnItemLongClickListener longClickListener;
 
-    public FavouriteQuotesAdapter(List<Quotation> list, OnItemClickListener listener) {
+    public FavouriteQuotesAdapter(List<Quotation> list) {
         this.listQuotes = list;
-        this.clickListener = listener;
     }
 
     @NonNull
@@ -42,6 +46,14 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         holder.tvAuthor.setText(listQuotes.get(position).getQuoteAuthor());
     }
 
+    public void setOnItemClickListener(OnItemClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public void setOnLongItemClickListener(OnItemLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
+    }
+
     @Override
     public int getItemCount() {
         return listQuotes.size();
@@ -51,7 +63,16 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         return listQuotes.get(position);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void removeItem(int position) {
+        listQuotes.remove(position);
+    }
+
+    public void removeQuotation(int position) {
+        removeItem(position);
+        this.notifyItemRemoved(position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public TextView tvQuote;
         public TextView tvAuthor;
@@ -59,6 +80,7 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         public ViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
             tvQuote = view.findViewById(R.id.txtQuote);
             tvAuthor = view.findViewById(R.id.txtAuthor);
         }
@@ -70,6 +92,11 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
 
         }
 
+        @Override
+        public boolean onLongClick(View view) {
+            longClickListener.onItemLongClick(getAdapterPosition());
+            return false;
+        }
     }
 
 }

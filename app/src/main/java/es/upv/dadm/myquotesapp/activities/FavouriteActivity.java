@@ -2,17 +2,20 @@ package es.upv.dadm.myquotesapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,13 +47,21 @@ public class FavouriteActivity extends AppCompatActivity {
 
         List<Quotation> data = getMockQuotations();
 
-        FavouriteQuotesAdapter adapter = new FavouriteQuotesAdapter(data, new FavouriteQuotesAdapter.OnItemClickListener() {
+        FavouriteQuotesAdapter adapter = new FavouriteQuotesAdapter(data);
+
+        adapter.setOnItemClickListener(new FavouriteQuotesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Quotation quotation) {
                 redirectToWikipedia(quotation);
             }
         });
 
+        adapter.setOnLongItemClickListener(new FavouriteQuotesAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(int position) {
+                createDialog(position, adapter);
+            }
+        });
 
         recycler.setAdapter(adapter);
 
@@ -68,6 +79,25 @@ public class FavouriteActivity extends AppCompatActivity {
         if (activities.size() > 0) {
             startActivity(intent);
         }
+    }
+
+    public void createDialog(int position, FavouriteQuotesAdapter adapter) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(android.R.drawable.stat_sys_warning);
+        builder.setMessage(R.string.favourite_dialog_message);
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(FavouriteActivity.this, R.string.favourite_dialog_no, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                adapter.removeQuotation(position);
+            }
+        });
+        builder.create().show();
     }
 
     public void onClick() {

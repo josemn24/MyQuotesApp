@@ -1,10 +1,12 @@
-package es.upv.dadm.myquotesapp;
+package es.upv.dadm.myquotesapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import es.upv.dadm.myquotesapp.R;
 
 public class DashboardActivity extends AppCompatActivity {
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QuotationActivity">
+    tools:context=".activities.QuotationActivity">
+
     <ProgressBar
         android:id="@+id/progressBar2"
         style="?android:attr/progressBarStyle"
@@ -52,4 +53,5 @@
         android:text=""
         tools:layout_editor_absoluteX="337dp"
         tools:layout_editor_absoluteY="696dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

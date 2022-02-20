@@ -13,9 +13,10 @@ import android.os.Bundle;
 
 import java.util.List;
 
-
+import es.upv.dadm.myquotesapp.R;
 
 public class QuotationActivity extends AppCompatActivity {
+
     private TextView textViewSample;
 
     @Override

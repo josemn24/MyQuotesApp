@@ -14,10 +14,17 @@
 
     <string name="about_text_view_1">Quotation Shake by\n\nJose\n\njomona6@inf.upv.es\n\nDeveloped for DADM 2022</string>
 
-    <string name="settings_text_view_1">Name that identifies the user</string>
+    <!-- <string name="settings_text_view_1">Name that identifies the user</string>
     <string name="settings_edit_text_1">Insert your name</string>
     <string name="settings_text_view_2">Get quotations in the selected language</string>
     <string name="settings_text_view_3">Request quotations using the selected HTTP method</string>
+    <string name="settings_radio_get" translatable="false">GET</string>
+    <string name="settings_radio_post" translatable="false">POST</string> -->
+
+    <string name="settings_username">User name</string>
+    <string name="settings_obtaining_quotations">Obtaining quotations</string>
+    <string name="settings_quotations_language">Quotations language</string>
+    <string name="settings_http_requests">HTTP requests</string>
     <string name="settings_radio_get" translatable="false">GET</string>
     <string name="settings_radio_post" translatable="false">POST</string>
 

@@ -24,4 +24,8 @@
     <string name="favourite_dialog_message">¿Estás seguro de eliminar esta cita?</string>
     <string name="favourite_dialog_yes">Sí</string>
     <string name="favourite_dialog_no">No</string>
+    <string name="quotation_activity_action_bar_add">Añadir</string>
+    <string name="quotation_activity_action_bar_refresh">Refrescar</string>
+    <string name="favourite_activity_action_bar_clear_all">Borrar todo</string>
+    <string name="favourite_dialog_message_all">¿Estás seguro de eliminar todas las citas?</string>
 </resources>

@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/settings_text_view_1"
                 android:textColor="@color/purple_500"
-                android:textSize="20sp" />
+                android:textSize="20sp"/>
 
             <EditText
                 android:id="@+id/editTextTextPersonName"

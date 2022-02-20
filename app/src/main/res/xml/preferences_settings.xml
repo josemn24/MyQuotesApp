@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="Nameless One"
+        android:key="settings_username"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/settings_username" />
+    <PreferenceCategory android:title="Preference category">
+
+        <ListPreference
+            android:defaultValue="@string/language_english"
+            android:entries="@array/languages_array"
+            android:entryValues="@array/languages_array"
+            android:key="list_languages"
+            android:title="@string/settings_quotations_language" />
+        <ListPreference
+            android:defaultValue="@string/settings_radio_get"
+            android:entries="@array/requests_array"
+            android:entryValues="@array/requests_array"
+            android:key="list_requests"
+            android:title="@string/settings_http_requests" />
+    </PreferenceCategory>
+</PreferenceScreen>

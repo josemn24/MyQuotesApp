@@ -6,4 +6,9 @@
         <item>@string/language_russian</item>
     </string-array>
 
+    <string-array name="requests_array">
+        <item>@string/settings_radio_get</item>
+        <item>@string/settings_radio_post</item>
+    </string-array>
+
 </resources>

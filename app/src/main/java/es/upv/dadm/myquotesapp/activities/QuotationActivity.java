@@ -1,8 +1,10 @@
 package es.upv.dadm.myquotesapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -23,13 +25,16 @@ public class QuotationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quotation);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         final View.OnClickListener listener = v -> onClick();
 
         textViewSample = findViewById(R.id.tw_greeting);
 
         String text = textViewSample.getText().toString();
+        String username = prefs.getString("settings_username", "Nameless One");
 
-        textViewSample.setText(text.replace("%1s!", "Nameless one"));
+        textViewSample.setText(text.replace("%1s!", username));
 
         findViewById(R.id.ib_new_quotation).setOnClickListener(listener);
 

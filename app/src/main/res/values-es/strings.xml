@@ -11,10 +11,17 @@
     <string name="action_bar_settings">Ajustes</string>
     <string name="action_bar_about">Acerca de</string>
     <string name="about_text_view_1">Batido de cita por[...]</string>
-    <string name="settings_text_view_1">Nombre que identifica al usuario</string>
+
+    <!-- <string name="settings_text_view_1">Nombre que identifica al usuario</string>
     <string name="settings_edit_text_1">Inserta tu nombre</string>
     <string name="settings_text_view_2">Obtener citas en el lenguaje seleccionado</string>
-    <string name="settings_text_view_3">Solicitar citas usando el método HTTP seleccionado</string>
+    <string name="settings_text_view_3">Solicitar citas usando el método HTTP seleccionado</string> -->
+
+    <string name="settings_username">Nombre de usuario</string>
+    <string name="settings_obtaining_quotations">Obtención de citas</string>
+    <string name="settings_quotations_language">Idioma</string>
+    <string name="settings_http_requests">Peticiones HTTP</string>
+
     <string name="language_english">Inglés</string>
     <string name="language_russian">Ruso</string>
     <string name="favourite_text_view_1">Información del autor</string>

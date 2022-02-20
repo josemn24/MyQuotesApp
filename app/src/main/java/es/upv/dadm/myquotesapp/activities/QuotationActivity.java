@@ -1,4 +1,4 @@
-package es.upv.dadm.myquotesapp;
+package es.upv.dadm.myquotesapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 

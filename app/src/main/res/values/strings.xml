@@ -31,7 +31,13 @@
     <string name="language_russian">Russian</string>
 
     <string name="favourite_dialog_message">Are you sure that you want to delete this quotation?</string>
+    <string name="favourite_dialog_message_all">Are you sure that you want to delete all quotations?</string>
     <string name="favourite_dialog_yes">Yes</string>
     <string name="favourite_dialog_no">No</string>
+
+    <string name="quotation_activity_action_bar_add">Add</string>
+    <string name="quotation_activity_action_bar_refresh">Refresh</string>
+
+    <string name="favourite_activity_action_bar_clear_all">Clear All</string>
 
 </resources>

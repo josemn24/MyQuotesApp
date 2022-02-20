@@ -9,11 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.os.Bundle;
 
 import java.util.List;
 
-public class QuotationActivity extends AppCompatActivity {
 
+
+public class QuotationActivity extends AppCompatActivity {
     private TextView textViewSample;
 
     @Override

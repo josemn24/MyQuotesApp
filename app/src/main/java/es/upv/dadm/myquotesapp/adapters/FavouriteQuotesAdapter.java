@@ -72,6 +72,12 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         this.notifyItemRemoved(position);
     }
 
+    public void removeAllQuotation() {
+        int length = listQuotes.size();
+        listQuotes.clear();
+        this.notifyItemRangeRemoved(0, length);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public TextView tvQuote;
@@ -99,4 +105,7 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         }
     }
 
+    public List<Quotation> getListQuotes() {
+        return listQuotes;
+    }
 }

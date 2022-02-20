@@ -14,7 +14,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,6 +31,9 @@ import es.upv.dadm.myquotesapp.adapters.FavouriteQuotesAdapter;
 import es.upv.dadm.myquotesapp.pojo.Quotation;
 
 public class FavouriteActivity extends AppCompatActivity {
+
+    private FavouriteQuotesAdapter adapter;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,7 @@ public class FavouriteActivity extends AppCompatActivity {
 
         List<Quotation> data = getMockQuotations();
 
-        FavouriteQuotesAdapter adapter = new FavouriteQuotesAdapter(data);
+        adapter = new FavouriteQuotesAdapter(data);
 
         adapter.setOnItemClickListener(new FavouriteQuotesAdapter.OnItemClickListener() {
             @Override
@@ -129,6 +135,46 @@ public class FavouriteActivity extends AppCompatActivity {
       res.add(new Quotation("You learn to speak by speaking, to study by studying, to run by running, to work by working; in just the same way, you learn to love by loving. ", "Anatole France"));
 
       return res;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        if(this.adapter.getListQuotes().size() == 0){
+            menu.setGroupVisible(R.id.items_to_hide, false);
+        }
+        getMenuInflater().inflate(R.menu.favourite, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.item_delete_all_favourite) {
+            removeAllDialog(this.adapter);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void removeAllDialog(FavouriteQuotesAdapter adapter) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(android.R.drawable.stat_sys_warning);
+        builder.setMessage(R.string.favourite_dialog_message_all);
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(FavouriteActivity.this, R.string.favourite_dialog_no, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                adapter.removeAllQuotation();
+                menu.setGroupVisible(R.id.items_to_hide, false);
+            }
+        });
+        builder.create().show();
     }
 
 }

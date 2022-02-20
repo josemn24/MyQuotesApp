@@ -10,7 +10,7 @@
     <string name="action_bar_random_quotations">Citas aleatorias</string>
     <string name="action_bar_settings">Ajustes</string>
     <string name="action_bar_about">Acerca de</string>
-    <string name="about_text_view_1">Batido de cita por[...]</string>
+    <string name="about_text_view_1">Quotation Shake por[...]</string>
     <string name="settings_text_view_1">Nombre que identifica al usuario</string>
     <string name="settings_edit_text_1">Inserta tu nombre</string>
     <string name="settings_text_view_2">Obtener citas en el lenguaje seleccionado</string>

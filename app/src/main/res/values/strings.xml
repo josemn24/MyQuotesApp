@@ -31,8 +31,8 @@
     <string name="favourite_text_view_1">Author info</string>
 
     <string name="quotation_text_view_1">Hello %1s!\nPress Refresh to get a new quotation</string>
-    <string name="quotation_text_view_2">This is a sample quotation</string>
-    <string name="quotation_text_view_3">Sample autor</string>
+    <string name="quotation_text_view_2">Sample quotation %1$d</string>
+    <string name="quotation_text_view_3">Sample author %1$d</string>
 
     <string name="language_english">English</string>
     <string name="language_russian">Russian</string>

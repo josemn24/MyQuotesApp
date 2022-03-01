@@ -28,6 +28,7 @@ import java.util.ListIterator;
 
 import es.upv.dadm.myquotesapp.R;
 import es.upv.dadm.myquotesapp.adapters.FavouriteQuotesAdapter;
+import es.upv.dadm.myquotesapp.databases.QuotationsDatabase;
 import es.upv.dadm.myquotesapp.pojo.Quotation;
 
 public class FavouriteActivity extends AppCompatActivity {
@@ -51,7 +52,8 @@ public class FavouriteActivity extends AppCompatActivity {
         DividerItemDecoration divider = new DividerItemDecoration(this, manager.getOrientation());
         recycler.addItemDecoration(divider);
 
-        List<Quotation> data = getMockQuotations();
+        //List<Quotation> data = getMockQuotations();
+        List<Quotation> data = QuotationsDatabase.getInstance(this).quotationDao().getQuotations();
 
         adapter = new FavouriteQuotesAdapter(data);
 
@@ -100,6 +102,7 @@ public class FavouriteActivity extends AppCompatActivity {
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteQuotation(adapter.getItem(position));
                 adapter.removeQuotation(position);
             }
         });
@@ -170,6 +173,7 @@ public class FavouriteActivity extends AppCompatActivity {
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteAllQuotations();
                 adapter.removeAllQuotation();
                 menu.setGroupVisible(R.id.items_to_hide, false);
             }

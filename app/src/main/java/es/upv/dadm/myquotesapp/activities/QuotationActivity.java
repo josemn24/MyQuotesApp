@@ -20,6 +20,8 @@ import java.util.List;
 import java.io.*;
 
 import es.upv.dadm.myquotesapp.R;
+import es.upv.dadm.myquotesapp.databases.QuotationsDatabase;
+import es.upv.dadm.myquotesapp.pojo.Quotation;
 
 public class QuotationActivity extends AppCompatActivity {
 
@@ -81,19 +83,10 @@ public class QuotationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.item_new_quotation) {
-            textViewSample.setText(oldTextViewSample.replace("%1$d",
-                    Integer.toString(quotationCounter)));
-//            textViewSample.setText(R.string.quotation_text_view_2);
-            textViewAuthor.setText(oldTextViewAuthor.replace("%1$d",
-                    Integer.toString(quotationCounter)));
-//            textViewAuthor.setText(R.string.quotation_text_view_3);
-            quotationCounter++;
-            addVisible = true;
-            menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
+            this.refresh();
             return true;
         } else if (item.getItemId() == R.id.item_add_quotation) {
-            addVisible = false;
-            menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
+            this.addQuotation();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -107,6 +100,24 @@ public class QuotationActivity extends AppCompatActivity {
         outState.putInt("quotationCounter", quotationCounter);
         outState.putBoolean("addVisible", addVisible);
         super.onSaveInstanceState(outState);
+    }
+
+    public void refresh() {
+        textViewSample.setText(oldTextViewSample.replace("%1$d",
+                Integer.toString(quotationCounter)));
+        textViewAuthor.setText(oldTextViewAuthor.replace("%1$d",
+                Integer.toString(quotationCounter)));
+        quotationCounter++;
+        Quotation quotation = QuotationsDatabase.getInstance(this).quotationDao().getQuotation(textViewSample.getText().toString());
+        addVisible = (quotation == null) ? true : false;
+        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
+    }
+
+    public void addQuotation() {
+        Quotation newQuotation = new Quotation(textViewSample.getText().toString(), textViewAuthor.getText().toString());
+        QuotationsDatabase.getInstance(this).quotationDao().addQuotation(newQuotation);
+        addVisible = false;
+        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
     }
 
     public void setTextViewSample(String textViewSampleString) {

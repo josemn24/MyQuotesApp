@@ -102,8 +102,15 @@ public class FavouriteActivity extends AppCompatActivity {
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteQuotation(adapter.getItem(position));
-                adapter.removeQuotation(position);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Include here the code to access the database
+                        QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteQuotation(adapter.getItem(position));
+                        adapter.removeQuotation(position);
+                    }
+                }).start();
             }
         });
         builder.create().show();
@@ -173,8 +180,16 @@ public class FavouriteActivity extends AppCompatActivity {
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteAllQuotations();
-                adapter.removeAllQuotation();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Include here the code to access the database
+                        QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteAllQuotations();
+                        adapter.removeAllQuotation();
+                    }
+                }).start();
+
                 menu.setGroupVisible(R.id.items_to_hide, false);
             }
         });

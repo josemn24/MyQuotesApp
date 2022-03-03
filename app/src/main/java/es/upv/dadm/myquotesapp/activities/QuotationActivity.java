@@ -53,13 +53,12 @@ public class QuotationActivity extends AppCompatActivity {
 
         textViewSample = findViewById(R.id.tw_greeting);
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             String text = textViewSample.getText().toString();
             String username = prefs.getString("settings_username", "Nameless One");
 
             textViewSample.setText(text.replace("%1s!", username));
-        }
-        else{
+        } else {
             quotationCounter = savedInstanceState.getInt("quotationCounter");
             textViewSample.setText(savedInstanceState.getString("quotation_text_view_2"));
             textViewAuthor.setText(savedInstanceState.getString("quotation_text_view_3"));
@@ -86,7 +85,15 @@ public class QuotationActivity extends AppCompatActivity {
             this.refresh();
             return true;
         } else if (item.getItemId() == R.id.item_add_quotation) {
-            this.addQuotation();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // Include here the code to access the database
+                    QuotationActivity.this.addQuotation();
+                }
+            }).start();
+
             return true;
         } else {
             return super.onOptionsItemSelected(item);

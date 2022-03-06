@@ -21,20 +21,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyQuotesApp">
         <activity
-            android:name=".fragments.QuotationFragment"
-            android:exported="false"
-            android:label="@string/action_bar_random_quotations"
-            android:parentActivityName=".activities.DashboardActivity" />
-        <activity
-            android:name=".fragments.FavouriteFragment"
-            android:exported="false"
-            android:label="@string/action_bar_favourite_quotations"
-            android:parentActivityName=".activities.DashboardActivity" />
-        <activity
-            android:name=".fragments.AboutFragment"
-            android:exported="true"
-            android:parentActivityName=".activities.DashboardActivity" />
-        <activity
             android:name=".activities.DashboardActivity"
             android:exported="true">
             <intent-filter>

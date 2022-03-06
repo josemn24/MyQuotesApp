@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".activities.DashboardActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="8dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <Button
             android:id="@+id/b_get_quotations"
@@ -20,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/get_quotations"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <Button
             android:id="@+id/b_favourite_quotations"
@@ -28,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/favourite_quotations"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <Button
             android:id="@+id/b_settings"
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/settings"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <Button
             android:id="@+id/b_about"
@@ -44,13 +45,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/about"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_dashboard_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="400dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

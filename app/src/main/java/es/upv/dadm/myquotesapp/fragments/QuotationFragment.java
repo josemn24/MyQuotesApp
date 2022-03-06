@@ -91,7 +91,7 @@ public class QuotationFragment extends Fragment {
         // Restful
         this.queue = Volley.newRequestQueue(getContext());
 
-        return inflater.inflate(R.layout.fragment_about, null);
+        return inflater.inflate(R.layout.fragment_quotation, null);
     }
 
 

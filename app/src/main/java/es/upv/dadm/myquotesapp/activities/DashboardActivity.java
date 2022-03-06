@@ -13,6 +13,7 @@ import es.upv.dadm.myquotesapp.R;
 import es.upv.dadm.myquotesapp.fragments.AboutFragment;
 import es.upv.dadm.myquotesapp.fragments.FavouriteFragment;
 import es.upv.dadm.myquotesapp.fragments.QuotationFragment;
+import es.upv.dadm.myquotesapp.fragments.SettingsFragment;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -41,11 +42,11 @@ public class DashboardActivity extends AppCompatActivity {
             fragment_class = QuotationFragment.class;
             actionBarTitle = R.string.get_quotations;
         } else if (buttonClicked == R.id.b_favourite_quotations) {
-            fragment_class = FavouriteFragment.class;
-            actionBarTitle = R.string.favourite_quotations;
+            fragment_class = SettingsFragment.class;
+            actionBarTitle = R.string.settings;
         } else if (buttonClicked == R.id.b_settings) {
         } else { // (buttonClicked == R.id.b_about)
-            fragment_class = QuotationFragment.class;
+            fragment_class = AboutFragment.class;
             actionBarTitle = R.string.about;
 
         }
@@ -53,7 +54,9 @@ public class DashboardActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setReorderingAllowed(true);
-        transaction.add(R.id.fragment_dashboard_container, fragment_class, null);
+        if(fragment_class != null) {
+            transaction.replace(R.id.fragment_dashboard_container, fragment_class, null);
+        }
         transaction.commit();
         this.setTitle(actionBarTitle);
     }

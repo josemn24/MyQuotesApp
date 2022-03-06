@@ -223,12 +223,11 @@ public class FavouriteActivity extends AppCompatActivity {
         @Override
         public void run() {
 //            Handler handler = new Handler(Looper.getMainLooper());
-
+            List<Quotation> list = QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().getQuotations();
             try {
                 reference.get().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        List<Quotation> list = QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().getQuotations();
                         if(reference.get() != null){
                             reference.get().setAdapterList(list);
                         }

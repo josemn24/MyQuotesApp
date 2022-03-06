@@ -48,8 +48,8 @@
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fcvLogin"
-        android:name="fragment_exercise_1"
+        android:id="@+id/fragment_dashboard_container"
+        android:name="fragment_dashboard_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_exercise_1" />

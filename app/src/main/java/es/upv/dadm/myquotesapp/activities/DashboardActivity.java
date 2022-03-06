@@ -1,14 +1,23 @@
 package es.upv.dadm.myquotesapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import es.upv.dadm.myquotesapp.R;
+import es.upv.dadm.myquotesapp.fragments.AboutFragment;
+import es.upv.dadm.myquotesapp.fragments.FavouriteFragment;
+import es.upv.dadm.myquotesapp.fragments.QuotationFragment;
+import es.upv.dadm.myquotesapp.fragments.SettingsFragment;
 
 public class DashboardActivity extends AppCompatActivity {
+
+    Class<? extends Fragment> fragment_class;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,21 +36,29 @@ public class DashboardActivity extends AppCompatActivity {
     // This method is activated whenever any of the buttons is clicked.
     // It launches a new activity that displays the type of layout selected.
     private void testLayout(int buttonClicked) {
-        Intent intent;
+//        Intent intent;
+        int actionBarTitle = R.string.app_name;
         if (buttonClicked == R.id.b_get_quotations) {
-            intent = new Intent(DashboardActivity.this, QuotationActivity.class);
-            //intent.putExtra(Util.LAYOUT, Util.VERTICAL);
+            fragment_class = QuotationFragment.class;
+            actionBarTitle = R.string.get_quotations;
         } else if (buttonClicked == R.id.b_favourite_quotations) {
-            intent = new Intent(DashboardActivity.this, FavouriteActivity.class);
-            //intent.putExtra(Util.LAYOUT, Util.HORIZONTAL);
+            fragment_class = SettingsFragment.class;
+            actionBarTitle = R.string.settings;
         } else if (buttonClicked == R.id.b_settings) {
-            intent = new Intent(DashboardActivity.this, SettingsActivity.class);
-            //intent.putExtra(Util.LAYOUT, Util.NESTED);
         } else { // (buttonClicked == R.id.b_about)
-            intent = new Intent(DashboardActivity.this, AboutActivity.class);
-            //intent.putExtra(Util.LAYOUT, Util.RELATIVE);
+            fragment_class = AboutFragment.class;
+            actionBarTitle = R.string.about;
+
         }
-        startActivity(intent);
+//        startActivity(intent);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.setReorderingAllowed(true);
+        if(fragment_class != null) {
+            transaction.replace(R.id.fragment_dashboard_container, fragment_class, null);
+        }
+        transaction.commit();
+        this.setTitle(actionBarTitle);
     }
 
 }

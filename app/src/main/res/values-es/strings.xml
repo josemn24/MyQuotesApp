@@ -39,4 +39,6 @@
     <string name="quotation_activity_action_bar_refresh">Refrescar</string>
     <string name="favourite_activity_action_bar_clear_all">Borrar todo</string>
     <string name="favourite_dialog_message_all">¿Estás seguro de eliminar todas las citas?</string>
+
+    <string name="quotation_activity_toast_no_quote">No ha sido posible obtener una nueva cita</string>
 </resources>

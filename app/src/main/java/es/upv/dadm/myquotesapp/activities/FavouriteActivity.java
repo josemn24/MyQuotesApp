@@ -118,9 +118,10 @@ public class FavouriteActivity extends AppCompatActivity {
                     public void run() {
                         // Include here the code to access the database
                         QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteQuotation(adapter.getItem(position));
-                        adapter.removeQuotation(position);
+                        //adapter.removeQuotation(position);
                     }
                 }).start();
+                adapter.removeQuotation(position);
             }
         });
         builder.create().show();
@@ -196,10 +197,10 @@ public class FavouriteActivity extends AppCompatActivity {
                     public void run() {
                         // Include here the code to access the database
                         QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteAllQuotations();
-                        adapter.removeAllQuotation();
+                        //adapter.removeAllQuotation();
                     }
                 }).start();
-
+                adapter.removeAllQuotation();
                 menu.setGroupVisible(R.id.items_to_hide, false);
             }
         });

@@ -119,6 +119,9 @@ public class QuotationActivity extends AppCompatActivity {
                 }
             }).start();
 
+            addVisible = false;
+            menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
+
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -148,8 +151,6 @@ public class QuotationActivity extends AppCompatActivity {
     public void addQuotation() {
         Quotation newQuotation = new Quotation(textViewSample.getText().toString(), textViewAuthor.getText().toString());
         QuotationsDatabase.getInstance(this).quotationDao().addQuotation(newQuotation);
-        addVisible = false;
-        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
     }
 
     public boolean isConnected() {

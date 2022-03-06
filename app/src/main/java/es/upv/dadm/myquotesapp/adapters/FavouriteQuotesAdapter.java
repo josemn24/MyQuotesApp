@@ -56,7 +56,7 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
 
     public void setQuotations(List<Quotation> list){
         this.listQuotes = list;
-        this.notify();
+        this.notifyDataSetChanged();
     }
 
     @Override

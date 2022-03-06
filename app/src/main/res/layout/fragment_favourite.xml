@@ -5,6 +5,6 @@
     android:id="@+id/rv_favourite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.FavouriteActivity">
+    tools:context=".fragments.FavouriteFragment">
 
 </androidx.recyclerview.widget.RecyclerView>

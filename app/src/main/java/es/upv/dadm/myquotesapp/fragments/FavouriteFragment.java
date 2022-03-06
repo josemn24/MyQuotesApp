@@ -1,7 +1,5 @@
-package es.upv.dadm.myquotesapp.activities;
+package es.upv.dadm.myquotesapp.fragments;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -14,27 +12,19 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import es.upv.dadm.myquotesapp.R;
 import es.upv.dadm.myquotesapp.adapters.FavouriteQuotesAdapter;
 import es.upv.dadm.myquotesapp.databases.QuotationsDatabase;
 import es.upv.dadm.myquotesapp.pojo.Quotation;
 
-public class FavouriteActivity extends AppCompatActivity {
+public class FavouriteFragment extends AppCompatActivity {
 
     private FavouriteQuotesAdapter adapter;
     private Menu menu;
@@ -42,14 +32,14 @@ public class FavouriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favourite);
+        setContentView(R.layout.fragment_favourite);
 
         //final View.OnClickListener listener = v -> onClick();
 
         RecyclerView recycler = findViewById(R.id.rv_favourite);
 
         LinearLayoutManager manager = new LinearLayoutManager(
-                FavouriteActivity.this, RecyclerView.VERTICAL, false);
+                FavouriteFragment.this, RecyclerView.VERTICAL, false);
         recycler.setLayoutManager(manager);
 
         DividerItemDecoration divider = new DividerItemDecoration(this, manager.getOrientation());
@@ -82,7 +72,7 @@ public class FavouriteActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Thread thread = new ThreadClass(FavouriteActivity.this);
+        Thread thread = new ThreadClass(FavouriteFragment.this);
         thread.start();
     }
 
@@ -117,7 +107,7 @@ public class FavouriteActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Include here the code to access the database
-                        QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteQuotation(adapter.getItem(position));
+                        QuotationsDatabase.getInstance(FavouriteFragment.this).quotationDao().deleteQuotation(adapter.getItem(position));
                         adapter.removeQuotation(position);
                     }
                 }).start();
@@ -195,7 +185,7 @@ public class FavouriteActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Include here the code to access the database
-                        QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteAllQuotations();
+                        QuotationsDatabase.getInstance(FavouriteFragment.this).quotationDao().deleteAllQuotations();
                         adapter.removeAllQuotation();
                     }
                 }).start();
@@ -215,15 +205,15 @@ public class FavouriteActivity extends AppCompatActivity {
     }
 
     private class ThreadClass extends Thread {
-        private final WeakReference<FavouriteActivity> reference;
-        ThreadClass(FavouriteActivity activity) {
+        private final WeakReference<FavouriteFragment> reference;
+        ThreadClass(FavouriteFragment activity) {
             super();
-            this.reference = new WeakReference<FavouriteActivity>(activity);
+            this.reference = new WeakReference<FavouriteFragment>(activity);
         }
         @Override
         public void run() {
 //            Handler handler = new Handler(Looper.getMainLooper());
-            List<Quotation> list = QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().getQuotations();
+            List<Quotation> list = QuotationsDatabase.getInstance(FavouriteFragment.this).quotationDao().getQuotations();
             try {
                 reference.get().runOnUiThread(new Runnable() {
                     @Override

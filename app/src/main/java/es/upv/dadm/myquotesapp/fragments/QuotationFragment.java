@@ -1,25 +1,19 @@
-package es.upv.dadm.myquotesapp.activities;
+package es.upv.dadm.myquotesapp.fragments;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,16 +23,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.io.*;
 
 import es.upv.dadm.myquotesapp.R;
 import es.upv.dadm.myquotesapp.databases.QuotationsDatabase;
 import es.upv.dadm.myquotesapp.pojo.Quotation;
 import es.upv.dadm.myquotesapp.requests.QuotationRequest;
 
-public class QuotationActivity extends AppCompatActivity {
+public class QuotationFragment extends AppCompatActivity {
 
     private final String myUrl = "https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=";
     private final String myPostUrl = "https://api.forismatic.com/api/1.0/";
@@ -57,7 +48,7 @@ public class QuotationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quotation);
+        setContentView(R.layout.fragment_quotation);
 
         textViewSample = findViewById(R.id.tw_greeting);
         textViewAuthor = findViewById(R.id.tw_author);
@@ -106,7 +97,7 @@ public class QuotationActivity extends AppCompatActivity {
                 this.beforeRequest();
                 this.newQuotationRequest();
             } else {
-                Toast.makeText(QuotationActivity.this, R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+                Toast.makeText(QuotationFragment.this, R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
             }
             return true;
         } else if (item.getItemId() == R.id.item_add_quotation) {
@@ -115,7 +106,7 @@ public class QuotationActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     // Include here the code to access the database
-                    QuotationActivity.this.addQuotation();
+                    QuotationFragment.this.addQuotation();
                 }
             }).start();
 
@@ -173,14 +164,14 @@ public class QuotationActivity extends AppCompatActivity {
     public void displayQuotation(Quotation quotation) {
 
         if(quotation == null) {
-            Toast.makeText(QuotationActivity.this, R.string.quotation_activity_toast_no_quote, Toast.LENGTH_SHORT).show();
+            Toast.makeText(QuotationFragment.this, R.string.quotation_activity_toast_no_quote, Toast.LENGTH_SHORT).show();
         } else {
             textViewSample.setText(quotation.getQuoteText());
             textViewAuthor.setText(quotation.getQuoteAuthor());
             this.setProgressbarVisibility(false);
 
             // Thread
-            Thread thread = new ThreadClass(QuotationActivity.this);
+            Thread thread = new ThreadClass(QuotationFragment.this);
             thread.start();
 
         }
@@ -220,15 +211,15 @@ public class QuotationActivity extends AppCompatActivity {
     }
 
     private class ThreadClass extends Thread {
-        private final WeakReference<QuotationActivity> reference;
-        ThreadClass(QuotationActivity activity) {
+        private final WeakReference<QuotationFragment> reference;
+        ThreadClass(QuotationFragment activity) {
             super();
-            this.reference = new WeakReference<QuotationActivity>(activity);
+            this.reference = new WeakReference<QuotationFragment>(activity);
         }
         @Override
         public void run() {
 //            Handler handler = new Handler(Looper.getMainLooper());
-            Quotation dbQuotation = QuotationsDatabase.getInstance(QuotationActivity.this).quotationDao().getQuotation(textViewSample.getText().toString());
+            Quotation dbQuotation = QuotationsDatabase.getInstance(QuotationFragment.this).quotationDao().getQuotation(textViewSample.getText().toString());
             try {
                 reference.get().runOnUiThread(new Runnable() {
                     @Override

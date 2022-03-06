@@ -1,7 +1,6 @@
 package es.upv.dadm.myquotesapp.fragments;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -10,11 +9,18 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +35,7 @@ import es.upv.dadm.myquotesapp.databases.QuotationsDatabase;
 import es.upv.dadm.myquotesapp.pojo.Quotation;
 import es.upv.dadm.myquotesapp.requests.QuotationRequest;
 
-public class QuotationFragment extends AppCompatActivity {
+public class QuotationFragment extends Fragment {
 
     private final String myUrl = "https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=";
     private final String myPostUrl = "https://api.forismatic.com/api/1.0/";
@@ -40,26 +46,33 @@ public class QuotationFragment extends AppCompatActivity {
     private boolean addVisible;
     private TextView textViewAuthor;
     private TextView textViewSample;
+    private ProgressBar progressBar;
     private String oldTextViewSample;
     private String oldTextViewAuthor;
     private boolean refreshVisible;
     private RequestQueue queue;
+    private View view;
+
+    public QuotationFragment() {
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_quotation);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        textViewSample = findViewById(R.id.tw_greeting);
-        textViewAuthor = findViewById(R.id.tw_author);
+        view = inflater.inflate(R.layout.fragment_quotation, null);
+
+        textViewSample = view.findViewById(R.id.tw_greeting);
+        textViewAuthor = view.findViewById(R.id.tw_author);
+        progressBar = view.findViewById(R.id.progressBar2);
         oldTextViewSample = getString(R.string.quotation_text_view_2);
         oldTextViewAuthor = getString(R.string.quotation_text_view_3);
         addVisible = false;
         refreshVisible = true;
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        textViewSample = findViewById(R.id.tw_greeting);
+        textViewSample = view.findViewById(R.id.tw_greeting);
 
         if (savedInstanceState == null) {
             String text = textViewSample.getText().toString();
@@ -72,21 +85,28 @@ public class QuotationFragment extends AppCompatActivity {
             textViewSample.setText(savedInstanceState.getString("quotation_text_view_2"));
             textViewAuthor.setText(savedInstanceState.getString("quotation_text_view_3"));
             addVisible = savedInstanceState.getBoolean("addVisible");
-            supportInvalidateOptionsMenu();
+            getActivity().invalidateOptionsMenu();
         }
 
         // Restful
-        this.queue = Volley.newRequestQueue(getApplicationContext());
+        this.queue = Volley.newRequestQueue(getContext());
 
+        return inflater.inflate(R.layout.fragment_about, null);
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         this.menu = menu;
-        getMenuInflater().inflate(R.menu.quotation, menu);
+        menuInflater.inflate(R.menu.quotation, menu);
         menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
         menu.findItem(R.id.item_new_quotation).setVisible(refreshVisible);
-        return true;
     }
 
     @Override
@@ -97,7 +117,7 @@ public class QuotationFragment extends AppCompatActivity {
                 this.beforeRequest();
                 this.newQuotationRequest();
             } else {
-                Toast.makeText(QuotationFragment.this, R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
             }
             return true;
         } else if (item.getItemId() == R.id.item_add_quotation) {
@@ -133,19 +153,19 @@ public class QuotationFragment extends AppCompatActivity {
 
     public void setProgressbarVisibility(boolean visibility) {
         int visible = visibility ? View.VISIBLE : View.INVISIBLE;
-        findViewById(R.id.progressBar2).setVisibility(visible);
+        view.findViewById(R.id.progressBar2).setVisibility(visible);
     }
 
     public void addQuotation() {
         Quotation newQuotation = new Quotation(textViewSample.getText().toString(), textViewAuthor.getText().toString());
-        QuotationsDatabase.getInstance(this).quotationDao().addQuotation(newQuotation);
+        QuotationsDatabase.getInstance(getContext()).quotationDao().addQuotation(newQuotation);
         addVisible = false;
         menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
     }
 
     public boolean isConnected() {
         boolean result = false;
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = (ConnectivityManager) getContext().getSystemService(CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT > 22) {
             final Network activeNetwork = manager.getActiveNetwork();
             if (activeNetwork != null) {
@@ -163,8 +183,8 @@ public class QuotationFragment extends AppCompatActivity {
 
     public void displayQuotation(Quotation quotation) {
 
-        if(quotation == null) {
-            Toast.makeText(QuotationFragment.this, R.string.quotation_activity_toast_no_quote, Toast.LENGTH_SHORT).show();
+        if (quotation == null) {
+            Toast.makeText(getContext(), R.string.quotation_activity_toast_no_quote, Toast.LENGTH_SHORT).show();
         } else {
             textViewSample.setText(quotation.getQuoteText());
             textViewAuthor.setText(quotation.getQuoteAuthor());
@@ -212,19 +232,22 @@ public class QuotationFragment extends AppCompatActivity {
 
     private class ThreadClass extends Thread {
         private final WeakReference<QuotationFragment> reference;
-        ThreadClass(QuotationFragment activity) {
+
+        ThreadClass(QuotationFragment fragment) {
             super();
-            this.reference = new WeakReference<QuotationFragment>(activity);
+            this.reference = new WeakReference<QuotationFragment>(fragment);
         }
+
         @Override
         public void run() {
 //            Handler handler = new Handler(Looper.getMainLooper());
-            Quotation dbQuotation = QuotationsDatabase.getInstance(QuotationFragment.this).quotationDao().getQuotation(textViewSample.getText().toString());
+            Quotation dbQuotation = QuotationsDatabase.getInstance(getContext()).quotationDao().getQuotation(textViewSample.getText().toString());
             try {
-                reference.get().runOnUiThread(new Runnable() {
+//                Context context = reference.get().getActivity();
+                reference.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(reference.get() != null){
+                        if (reference.get() != null) {
                             boolean addVisibility = (dbQuotation == null) ? true : false;
                             reference.get().setActionBarOptionsVisibility(true, addVisibility);
                         }

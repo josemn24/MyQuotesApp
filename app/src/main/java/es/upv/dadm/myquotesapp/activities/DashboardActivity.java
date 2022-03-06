@@ -42,8 +42,8 @@ public class DashboardActivity extends AppCompatActivity {
             fragment_class = QuotationFragment.class;
             actionBarTitle = R.string.get_quotations;
         } else if (buttonClicked == R.id.b_favourite_quotations) {
-            fragment_class = SettingsFragment.class;
-            actionBarTitle = R.string.settings;
+            fragment_class = FavouriteFragment.class;
+            actionBarTitle = R.string.favourite_quotations;
         } else if (buttonClicked == R.id.b_settings) {
         } else { // (buttonClicked == R.id.b_about)
             fragment_class = AboutFragment.class;

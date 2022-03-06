@@ -14,12 +14,15 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -52,10 +55,10 @@ public class FavouriteActivity extends AppCompatActivity {
         DividerItemDecoration divider = new DividerItemDecoration(this, manager.getOrientation());
         recycler.addItemDecoration(divider);
 
-        //List<Quotation> data = getMockQuotations();
-        List<Quotation> data = QuotationsDatabase.getInstance(this).quotationDao().getQuotations();
+//        List<Quotation> data = getMockQuotations();
+//        List<Quotation> data = QuotationsDatabase.getInstance(this).quotationDao().getQuotations();
 
-        adapter = new FavouriteQuotesAdapter(data);
+        adapter = new FavouriteQuotesAdapter(new ArrayList<Quotation>());
 
         adapter.setOnItemClickListener(new FavouriteQuotesAdapter.OnItemClickListener() {
             @Override
@@ -74,6 +77,13 @@ public class FavouriteActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
 
         //findViewById(R.id.b_author_information).setOnClickListener(listener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Thread thread = new ThreadClass(FavouriteActivity.this);
+        thread.start();
     }
 
     public void redirectToWikipedia(Quotation quotation) {
@@ -102,8 +112,15 @@ public class FavouriteActivity extends AppCompatActivity {
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteQuotation(adapter.getItem(position));
-                adapter.removeQuotation(position);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Include here the code to access the database
+                        QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteQuotation(adapter.getItem(position));
+                        adapter.removeQuotation(position);
+                    }
+                }).start();
             }
         });
         builder.create().show();
@@ -173,12 +190,54 @@ public class FavouriteActivity extends AppCompatActivity {
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteAllQuotations();
-                adapter.removeAllQuotation();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Include here the code to access the database
+                        QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().deleteAllQuotations();
+                        adapter.removeAllQuotation();
+                    }
+                }).start();
+
                 menu.setGroupVisible(R.id.items_to_hide, false);
             }
         });
         builder.create().show();
+    }
+
+    private void setAdapterList(List<Quotation> list){
+        this.adapter.setQuotations(list);
+
+        if(!list.isEmpty()){
+            menu.setGroupVisible(R.id.items_to_hide, true);
+        }
+    }
+
+    private class ThreadClass extends Thread {
+        private final WeakReference<FavouriteActivity> reference;
+        ThreadClass(FavouriteActivity activity) {
+            super();
+            this.reference = new WeakReference<FavouriteActivity>(activity);
+        }
+        @Override
+        public void run() {
+//            Handler handler = new Handler(Looper.getMainLooper());
+            List<Quotation> list = QuotationsDatabase.getInstance(FavouriteActivity.this).quotationDao().getQuotations();
+            try {
+                reference.get().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(reference.get() != null){
+                            reference.get().setAdapterList(list);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 }

@@ -54,6 +54,11 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         this.longClickListener = longClickListener;
     }
 
+    public void setQuotations(List<Quotation> list){
+        this.listQuotes = list;
+        this.notify();
+    }
+
     @Override
     public int getItemCount() {
         return listQuotes.size();

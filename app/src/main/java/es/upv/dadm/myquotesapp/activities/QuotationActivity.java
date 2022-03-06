@@ -28,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.io.*;
@@ -44,7 +45,6 @@ public class QuotationActivity extends AppCompatActivity {
     private final String body = "method=getQuote&format=json&lang=";
     private String prefLanguage;
     private String prefRequest;
-    private int quotationCounter = 0;
     private Menu menu;
     private boolean addVisible;
     private TextView textViewAuthor;
@@ -68,8 +68,6 @@ public class QuotationActivity extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-//        final View.OnClickListener listener = v -> onClick();
-
         textViewSample = findViewById(R.id.tw_greeting);
 
         if (savedInstanceState == null) {
@@ -80,7 +78,6 @@ public class QuotationActivity extends AppCompatActivity {
 
             textViewSample.setText(text.replace("%1s!", username));
         } else {
-            quotationCounter = savedInstanceState.getInt("quotationCounter");
             textViewSample.setText(savedInstanceState.getString("quotation_text_view_2"));
             textViewAuthor.setText(savedInstanceState.getString("quotation_text_view_3"));
             addVisible = savedInstanceState.getBoolean("addVisible");
@@ -90,9 +87,6 @@ public class QuotationActivity extends AppCompatActivity {
         // Restful
         this.queue = Volley.newRequestQueue(getApplicationContext());
 
-
-
-//        findViewById(R.id.ib_new_quotation).setOnClickListener(listener);
     }
 
     @Override
@@ -111,11 +105,9 @@ public class QuotationActivity extends AppCompatActivity {
             if (isConnected()) {
                 this.beforeRequest();
                 this.newQuotationRequest();
-                //this.refresh();
             } else {
-                Toast.makeText(QuotationActivity.this, "Sin conexión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(QuotationActivity.this, R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
             }
-            //this.refresh();
             return true;
         } else if (item.getItemId() == R.id.item_add_quotation) {
 
@@ -137,7 +129,6 @@ public class QuotationActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         outState.putString("quotation_text_view_2", textViewSample.getText().toString());
         outState.putString("quotation_text_view_3", textViewAuthor.getText().toString());
-        outState.putInt("quotationCounter", quotationCounter);
         outState.putBoolean("addVisible", addVisible);
         super.onSaveInstanceState(outState);
     }
@@ -152,17 +143,6 @@ public class QuotationActivity extends AppCompatActivity {
     public void setProgressbarVisibility(boolean visibility) {
         int visible = visibility ? View.VISIBLE : View.INVISIBLE;
         findViewById(R.id.progressBar2).setVisibility(visible);
-    }
-
-    public void refresh() {
-        textViewSample.setText(oldTextViewSample.replace("%1$d",
-                Integer.toString(quotationCounter)));
-        textViewAuthor.setText(oldTextViewAuthor.replace("%1$d",
-                Integer.toString(quotationCounter)));
-        quotationCounter++;
-        Quotation quotation = QuotationsDatabase.getInstance(this).quotationDao().getQuotation(textViewSample.getText().toString());
-        addVisible = (quotation == null) ? true : false;
-        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
     }
 
     public void addQuotation() {
@@ -192,15 +172,6 @@ public class QuotationActivity extends AppCompatActivity {
 
     public void displayQuotation(Quotation quotation) {
 
-        /* Crea un nuevo método público en el mismo fichero, que recibirá como parámetro un
-        objeto de tipo Quotation, y que será el que se lance a ejecución cuando se haya
-        obtenido una nueva cita desde el web service. Este método deberá actualizar las
-        etiquetas correspondientes al texto y autor de la cita, hacer invisible el ProgressBar, y
-        reutilizar el código anteriormente desarrollado para comprobar, usando un Thread, si
-        la cita ya está en la lista de favoritos y actualizar las opciones en el ActionBar de
-        acuerdo a esta información. Si el valor recibido como cita es nulo, entonces muestra
-        un Toast indicando que no fue posible obtener una cita. */
-
         if(quotation == null) {
             Toast.makeText(QuotationActivity.this, R.string.quotation_activity_toast_no_quote, Toast.LENGTH_SHORT).show();
         } else {
@@ -209,9 +180,9 @@ public class QuotationActivity extends AppCompatActivity {
             this.setProgressbarVisibility(false);
 
             // Thread
-            Quotation dbQuotation = QuotationsDatabase.getInstance(this).quotationDao().getQuotation(textViewSample.getText().toString());
-            boolean addVisibility = (dbQuotation == null) ? true : false;
-            this.setActionBarOptionsVisibility(true, addVisibility);
+            Thread thread = new ThreadClass(QuotationActivity.this);
+            thread.start();
+
         }
 
     }
@@ -248,21 +219,31 @@ public class QuotationActivity extends AppCompatActivity {
         return this.prefLanguage.equals("English") ? "en" : "ru";
     }
 
-    public void setTextViewSample(String textViewSampleString) {
-        this.textViewSample.setText(textViewSampleString);
+    private class ThreadClass extends Thread {
+        private final WeakReference<QuotationActivity> reference;
+        ThreadClass(QuotationActivity activity) {
+            super();
+            this.reference = new WeakReference<QuotationActivity>(activity);
+        }
+        @Override
+        public void run() {
+//            Handler handler = new Handler(Looper.getMainLooper());
+            Quotation dbQuotation = QuotationsDatabase.getInstance(QuotationActivity.this).quotationDao().getQuotation(textViewSample.getText().toString());
+            try {
+                reference.get().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(reference.get() != null){
+                            boolean addVisibility = (dbQuotation == null) ? true : false;
+                            reference.get().setActionBarOptionsVisibility(true, addVisibility);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
-    public void setTextViewAuthor(String textViewAuthorString) {
-        this.textViewAuthor.setText(textViewAuthorString);
-    }
-
-    //    public void onClick() {
-//        // do something when the button is clicked
-//        textViewSample = findViewById(R.id.tw_greeting);
-//        final TextView textViewAuthor = findViewById(R.id.tw_author);
-//
-//        textViewSample.setText(R.string.quotation_text_view_2);
-//        textViewAuthor.setText(R.string.quotation_text_view_3);
-//
-//    }
 }

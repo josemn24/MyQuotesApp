@@ -41,4 +41,5 @@
     <string name="favourite_dialog_message_all">¿Estás seguro de eliminar todas las citas?</string>
 
     <string name="quotation_activity_toast_no_quote">No ha sido posible obtener una nueva cita</string>
+    <string name="quotation_activity_toast_no_connection">Sin conexión</string>
 </resources>

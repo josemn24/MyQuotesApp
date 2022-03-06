@@ -48,5 +48,5 @@
     <string name="favourite_activity_action_bar_clear_all">Clear All</string>
 
     <string name="quotation_activity_toast_no_quote">It was not possible to get a new quotation</string>
-
+    <string name="quotation_activity_toast_no_connection">Without connection</string>
 </resources>

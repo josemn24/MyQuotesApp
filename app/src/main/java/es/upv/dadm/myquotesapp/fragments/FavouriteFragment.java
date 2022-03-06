@@ -2,6 +2,7 @@ package es.upv.dadm.myquotesapp.fragments;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,8 +13,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -24,25 +29,30 @@ import es.upv.dadm.myquotesapp.adapters.FavouriteQuotesAdapter;
 import es.upv.dadm.myquotesapp.databases.QuotationsDatabase;
 import es.upv.dadm.myquotesapp.pojo.Quotation;
 
-public class FavouriteFragment extends AppCompatActivity {
+public class FavouriteFragment extends Fragment {
 
     private FavouriteQuotesAdapter adapter;
     private Menu menu;
+    private View view;
+
+    public FavouriteFragment() {
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_favourite);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        view = inflater.inflate(R.layout.fragment_favourite, null);
 
         //final View.OnClickListener listener = v -> onClick();
 
-        RecyclerView recycler = findViewById(R.id.rv_favourite);
+        RecyclerView recycler = view.findViewById(R.id.rv_favourite);
 
         LinearLayoutManager manager = new LinearLayoutManager(
-                FavouriteFragment.this, RecyclerView.VERTICAL, false);
+                getContext(), RecyclerView.VERTICAL, false);
         recycler.setLayoutManager(manager);
 
-        DividerItemDecoration divider = new DividerItemDecoration(this, manager.getOrientation());
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), manager.getOrientation());
         recycler.addItemDecoration(divider);
 
 //        List<Quotation> data = getMockQuotations();
@@ -67,10 +77,18 @@ public class FavouriteFragment extends AppCompatActivity {
         recycler.setAdapter(adapter);
 
         //findViewById(R.id.b_author_information).setOnClickListener(listener);
+
+        return inflater.inflate(R.layout.fragment_favourite, null);
     }
 
     @Override
-    protected void onResume() {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
         Thread thread = new ThreadClass(FavouriteFragment.this);
         thread.start();
@@ -83,14 +101,14 @@ public class FavouriteFragment extends AppCompatActivity {
         intent.setData(Uri.parse(uri));
 
         List<ResolveInfo> activities =
-                getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                getContext().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (activities.size() > 0) {
             startActivity(intent);
         }
     }
 
     public void createDialog(int position, FavouriteQuotesAdapter adapter) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setIcon(android.R.drawable.stat_sys_warning);
         builder.setMessage(R.string.favourite_dialog_message);
         builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -107,27 +125,13 @@ public class FavouriteFragment extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Include here the code to access the database
-                        QuotationsDatabase.getInstance(FavouriteFragment.this).quotationDao().deleteQuotation(adapter.getItem(position));
+                        QuotationsDatabase.getInstance(getContext()).quotationDao().deleteQuotation(adapter.getItem(position));
                         adapter.removeQuotation(position);
                     }
                 }).start();
             }
         });
         builder.create().show();
-    }
-
-    public void onClick() {
-        // do something when the button is clicked
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("https://en.wikipedia.org/wiki/Special:Search?search=Albert Einstein"));
-
-        List<ResolveInfo> activities =
-                getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (activities.size() > 0) {
-            startActivity(intent);
-        }
-
     }
 
     public List<Quotation> getMockQuotations() {
@@ -148,13 +152,12 @@ public class FavouriteFragment extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         this.menu = menu;
         if(this.adapter.getListQuotes().size() == 0){
             menu.setGroupVisible(R.id.items_to_hide, false);
         }
-        getMenuInflater().inflate(R.menu.favourite, menu);
-        return true;
+        menuInflater.inflate(R.menu.favourite, menu);
     }
 
     @Override
@@ -168,7 +171,7 @@ public class FavouriteFragment extends AppCompatActivity {
     }
 
     public void removeAllDialog(FavouriteQuotesAdapter adapter) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setIcon(android.R.drawable.stat_sys_warning);
         builder.setMessage(R.string.favourite_dialog_message_all);
         builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -185,7 +188,7 @@ public class FavouriteFragment extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Include here the code to access the database
-                        QuotationsDatabase.getInstance(FavouriteFragment.this).quotationDao().deleteAllQuotations();
+                        QuotationsDatabase.getInstance(getContext()).quotationDao().deleteAllQuotations();
                         adapter.removeAllQuotation();
                     }
                 }).start();
@@ -206,16 +209,16 @@ public class FavouriteFragment extends AppCompatActivity {
 
     private class ThreadClass extends Thread {
         private final WeakReference<FavouriteFragment> reference;
-        ThreadClass(FavouriteFragment activity) {
+        ThreadClass(FavouriteFragment fragment) {
             super();
-            this.reference = new WeakReference<FavouriteFragment>(activity);
+            this.reference = new WeakReference<FavouriteFragment>(fragment);
         }
         @Override
         public void run() {
 //            Handler handler = new Handler(Looper.getMainLooper());
-            List<Quotation> list = QuotationsDatabase.getInstance(FavouriteFragment.this).quotationDao().getQuotations();
+            List<Quotation> list = QuotationsDatabase.getInstance(getContext()).quotationDao().getQuotations();
             try {
-                reference.get().runOnUiThread(new Runnable() {
+                reference.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if(reference.get() != null){

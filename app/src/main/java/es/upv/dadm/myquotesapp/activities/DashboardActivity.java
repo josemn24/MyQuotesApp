@@ -36,12 +36,18 @@ public class DashboardActivity extends AppCompatActivity {
     // It launches a new activity that displays the type of layout selected.
     private void testLayout(int buttonClicked) {
 //        Intent intent;
+        int actionBarTitle = R.string.app_name;
         if (buttonClicked == R.id.b_get_quotations) {
             fragment_class = QuotationFragment.class;
+            actionBarTitle = R.string.get_quotations;
         } else if (buttonClicked == R.id.b_favourite_quotations) {
+            fragment_class = FavouriteFragment.class;
+            actionBarTitle = R.string.favourite_quotations;
         } else if (buttonClicked == R.id.b_settings) {
         } else { // (buttonClicked == R.id.b_about)
             fragment_class = QuotationFragment.class;
+            actionBarTitle = R.string.about;
+
         }
 //        startActivity(intent);
         FragmentManager manager = getSupportFragmentManager();
@@ -49,6 +55,7 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.setReorderingAllowed(true);
         transaction.add(R.id.fragment_dashboard_container, fragment_class, null);
         transaction.commit();
+        this.setTitle(actionBarTitle);
     }
 
 }

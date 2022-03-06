@@ -130,6 +130,9 @@ public class QuotationFragment extends Fragment {
                 }
             }).start();
 
+            addVisible = false;
+            menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
+
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -159,8 +162,6 @@ public class QuotationFragment extends Fragment {
     public void addQuotation() {
         Quotation newQuotation = new Quotation(textViewSample.getText().toString(), textViewAuthor.getText().toString());
         QuotationsDatabase.getInstance(getContext()).quotationDao().addQuotation(newQuotation);
-        addVisible = false;
-        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
     }
 
     public boolean isConnected() {

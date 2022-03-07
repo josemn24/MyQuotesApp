@@ -102,11 +102,17 @@ public class QuotationFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Snackbar snackbar;
+                CoordinatorLayout coordinatorLayout;
+
                 if (isConnected()) {
                     QuotationFragment.this.beforeRequest();
                     QuotationFragment.this.newQuotationRequest();
                 } else {
-                    Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+                    coordinatorLayout = view.findViewById(R.id.coordinatorLayoutQuotation);
+                    snackbar = Snackbar.make(coordinatorLayout, R.string.quotation_activity_toast_no_connection, Snackbar.LENGTH_SHORT);
+                    snackbar.show();
                 }
             }
         });
@@ -149,7 +155,6 @@ public class QuotationFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         Snackbar snackbar;
         CoordinatorLayout coordinatorLayout;
-
         if (item.getItemId() == R.id.item_new_quotation) {
             if (isConnected()) {
                 this.beforeRequest();

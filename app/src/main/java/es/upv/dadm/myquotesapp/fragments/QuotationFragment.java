@@ -28,6 +28,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.ref.WeakReference;
 
@@ -47,6 +48,7 @@ public class QuotationFragment extends Fragment {
     private boolean addVisible;
     private TextView textViewAuthor;
     private TextView textViewSample;
+    FloatingActionButton floatingActionButton;
     private String oldTextViewSample;
     private String oldTextViewAuthor;
     private boolean refreshVisible;
@@ -64,12 +66,15 @@ public class QuotationFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_quotation, container, false);;
 
         swipeRefreshLayout = view.findViewById(R.id.swipelayout);
+        floatingActionButton = view.findViewById(R.id.fabMessage);
         textViewSample = view.findViewById(R.id.tw_greeting);
         textViewAuthor = view.findViewById(R.id.tw_author);
         oldTextViewSample = getString(R.string.quotation_text_view_2);
         oldTextViewAuthor = getString(R.string.quotation_text_view_3);
         addVisible = false;
         refreshVisible = true;
+
+        floatingActionButton.setVisibility(addVisible ? View.VISIBLE : View.INVISIBLE);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -104,6 +109,23 @@ public class QuotationFragment extends Fragment {
             }
         });
 
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Include here the code to access the database
+                        QuotationFragment.this.addQuotation();
+                    }
+                }).start();
+
+                addVisible = false;
+                floatingActionButton.setVisibility(addVisible ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+
         return view;
     }
 
@@ -118,7 +140,6 @@ public class QuotationFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         this.menu = menu;
         menuInflater.inflate(R.menu.quotation, menu);
-        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
         menu.findItem(R.id.item_new_quotation).setVisible(refreshVisible);
     }
 
@@ -133,20 +154,6 @@ public class QuotationFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
             }
-            return true;
-        } else if (item.getItemId() == R.id.item_add_quotation) {
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // Include here the code to access the database
-                    QuotationFragment.this.addQuotation();
-                }
-            }).start();
-
-            addVisible = false;
-            menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
-
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -164,7 +171,7 @@ public class QuotationFragment extends Fragment {
     public void setActionBarOptionsVisibility(boolean refreshVisibility, boolean addVisibility) {
         addVisible = addVisibility;
         refreshVisible = refreshVisibility;
-        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
+        floatingActionButton.setVisibility(addVisible ? View.VISIBLE : View.INVISIBLE);
         menu.findItem(R.id.item_new_quotation).setVisible(refreshVisible);
     }
 

@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -46,11 +47,11 @@ public class QuotationFragment extends Fragment {
     private boolean addVisible;
     private TextView textViewAuthor;
     private TextView textViewSample;
-    private ProgressBar progressBar;
     private String oldTextViewSample;
     private String oldTextViewAuthor;
     private boolean refreshVisible;
     private RequestQueue queue;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private View view;
 
     public QuotationFragment() {
@@ -62,9 +63,9 @@ public class QuotationFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_quotation, container, false);;
 
+        swipeRefreshLayout = view.findViewById(R.id.swipelayout);
         textViewSample = view.findViewById(R.id.tw_greeting);
         textViewAuthor = view.findViewById(R.id.tw_author);
-        progressBar = view.findViewById(R.id.progressBar2);
         oldTextViewSample = getString(R.string.quotation_text_view_2);
         oldTextViewAuthor = getString(R.string.quotation_text_view_3);
         addVisible = false;
@@ -91,6 +92,18 @@ public class QuotationFragment extends Fragment {
         // Restful
         this.queue = Volley.newRequestQueue(getContext());
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isConnected()) {
+                    QuotationFragment.this.beforeRequest();
+                    QuotationFragment.this.newQuotationRequest();
+                } else {
+                    Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         return view;
     }
 
@@ -116,6 +129,7 @@ public class QuotationFragment extends Fragment {
             if (isConnected()) {
                 this.beforeRequest();
                 this.newQuotationRequest();
+                swipeRefreshLayout.setRefreshing(true);
             } else {
                 Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
             }
@@ -154,11 +168,6 @@ public class QuotationFragment extends Fragment {
         menu.findItem(R.id.item_new_quotation).setVisible(refreshVisible);
     }
 
-    public void setProgressbarVisibility(boolean visibility) {
-        int visible = visibility ? View.VISIBLE : View.INVISIBLE;
-        view.findViewById(R.id.progressBar2).setVisibility(visible);
-    }
-
     public void addQuotation() {
         Quotation newQuotation = new Quotation(textViewSample.getText().toString(), textViewAuthor.getText().toString());
         QuotationsDatabase.getInstance(getContext()).quotationDao().addQuotation(newQuotation);
@@ -189,7 +198,6 @@ public class QuotationFragment extends Fragment {
         } else {
             textViewSample.setText(quotation.getQuoteText());
             textViewAuthor.setText(quotation.getQuoteAuthor());
-            this.setProgressbarVisibility(false);
 
             // Thread
             Thread thread = new ThreadClass(QuotationFragment.this);
@@ -201,7 +209,6 @@ public class QuotationFragment extends Fragment {
 
     public void beforeRequest() {
         this.setActionBarOptionsVisibility(false, false);
-        this.setProgressbarVisibility(true);
     }
 
     public void newQuotationRequest() {
@@ -214,6 +221,7 @@ public class QuotationFragment extends Fragment {
                 new Response.Listener<Quotation>() {
                     @Override
                     public void onResponse(Quotation quotationResponse) {
+                        swipeRefreshLayout.setRefreshing(false);
                         displayQuotation(quotationResponse);
                         //Toast.makeText(getContext(), quotationResponse.getQuoteText(), Toast.LENGTH_SHORT).show();
                     }

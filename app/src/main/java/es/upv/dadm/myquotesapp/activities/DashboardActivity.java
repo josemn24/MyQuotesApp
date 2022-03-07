@@ -62,8 +62,8 @@ public class DashboardActivity extends AppCompatActivity {
             fragment_class = SettingsFragment.class;
             actionBarTitle = R.string.settings;
         } else if (buttonClicked == R.id.btn_settings) {
-            fragment_class = SettingsFragment.class;
-            actionBarTitle = R.string.settings;
+            fragment_class = FavouriteFragment.class;
+            actionBarTitle = R.string.favourite_quotations;
         } else { // (buttonClicked == R.id.b_about)
             fragment_class = AboutFragment.class;
             actionBarTitle = R.string.about;

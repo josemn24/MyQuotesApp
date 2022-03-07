@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.ref.WeakReference;
 
@@ -48,11 +50,12 @@ public class QuotationFragment extends Fragment {
     private boolean addVisible;
     private TextView textViewAuthor;
     private TextView textViewSample;
-    private ProgressBar progressBar;
+    FloatingActionButton floatingActionButton;
     private String oldTextViewSample;
     private String oldTextViewAuthor;
     private boolean refreshVisible;
     private RequestQueue queue;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private View view;
 
     public QuotationFragment() {
@@ -64,13 +67,16 @@ public class QuotationFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_quotation, container, false);;
 
+        swipeRefreshLayout = view.findViewById(R.id.swipelayout);
+        floatingActionButton = view.findViewById(R.id.fabMessage);
         textViewSample = view.findViewById(R.id.tw_greeting);
         textViewAuthor = view.findViewById(R.id.tw_author);
-        progressBar = view.findViewById(R.id.progressBar2);
         oldTextViewSample = getString(R.string.quotation_text_view_2);
         oldTextViewAuthor = getString(R.string.quotation_text_view_3);
         addVisible = false;
         refreshVisible = true;
+
+        floatingActionButton.setVisibility(addVisible ? View.VISIBLE : View.INVISIBLE);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -93,6 +99,35 @@ public class QuotationFragment extends Fragment {
         // Restful
         this.queue = Volley.newRequestQueue(getContext());
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isConnected()) {
+                    QuotationFragment.this.beforeRequest();
+                    QuotationFragment.this.newQuotationRequest();
+                } else {
+                    Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Include here the code to access the database
+                        QuotationFragment.this.addQuotation();
+                    }
+                }).start();
+
+                addVisible = false;
+                floatingActionButton.setVisibility(addVisible ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+
         return view;
     }
 
@@ -107,7 +142,6 @@ public class QuotationFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         this.menu = menu;
         menuInflater.inflate(R.menu.quotation, menu);
-        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
         menu.findItem(R.id.item_new_quotation).setVisible(refreshVisible);
     }
 
@@ -120,26 +154,13 @@ public class QuotationFragment extends Fragment {
             if (isConnected()) {
                 this.beforeRequest();
                 this.newQuotationRequest();
+                swipeRefreshLayout.setRefreshing(true);
             } else {
 //                Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
                 coordinatorLayout = view.findViewById(R.id.coordinatorLayoutQuotation);
                 snackbar = Snackbar.make(coordinatorLayout, R.string.quotation_activity_toast_no_connection, Snackbar.LENGTH_SHORT);
                 snackbar.show();
             }
-            return true;
-        } else if (item.getItemId() == R.id.item_add_quotation) {
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // Include here the code to access the database
-                    QuotationFragment.this.addQuotation();
-                }
-            }).start();
-
-            addVisible = false;
-            menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
-
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -157,13 +178,8 @@ public class QuotationFragment extends Fragment {
     public void setActionBarOptionsVisibility(boolean refreshVisibility, boolean addVisibility) {
         addVisible = addVisibility;
         refreshVisible = refreshVisibility;
-        menu.findItem(R.id.item_add_quotation).setVisible(addVisible);
+        floatingActionButton.setVisibility(addVisible ? View.VISIBLE : View.INVISIBLE);
         menu.findItem(R.id.item_new_quotation).setVisible(refreshVisible);
-    }
-
-    public void setProgressbarVisibility(boolean visibility) {
-        int visible = visibility ? View.VISIBLE : View.INVISIBLE;
-        view.findViewById(R.id.progressBar2).setVisibility(visible);
     }
 
     public void addQuotation() {
@@ -201,7 +217,6 @@ public class QuotationFragment extends Fragment {
         } else {
             textViewSample.setText(quotation.getQuoteText());
             textViewAuthor.setText(quotation.getQuoteAuthor());
-            this.setProgressbarVisibility(false);
 
             // Thread
             Thread thread = new ThreadClass(QuotationFragment.this);
@@ -213,7 +228,6 @@ public class QuotationFragment extends Fragment {
 
     public void beforeRequest() {
         this.setActionBarOptionsVisibility(false, false);
-        this.setProgressbarVisibility(true);
     }
 
     public void newQuotationRequest() {
@@ -226,6 +240,7 @@ public class QuotationFragment extends Fragment {
                 new Response.Listener<Quotation>() {
                     @Override
                     public void onResponse(Quotation quotationResponse) {
+                        swipeRefreshLayout.setRefreshing(false);
                         displayQuotation(quotationResponse);
                         //Toast.makeText(getContext(), quotationResponse.getQuoteText(), Toast.LENGTH_SHORT).show();
                     }

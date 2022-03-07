@@ -80,7 +80,7 @@ public class FavouriteFragment extends Fragment {
         adapter.setOnLongItemClickListener(new FavouriteQuotesAdapter.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(int position) {
-                createDialog(position, adapter);
+                //createDialog(position, adapter);
             }
         });
 

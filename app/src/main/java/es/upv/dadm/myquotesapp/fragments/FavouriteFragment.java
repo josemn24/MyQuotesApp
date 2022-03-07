@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -130,6 +132,24 @@ public class FavouriteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        getChildFragmentManager().setFragmentResultListener(
+                "remove_all", this, new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Include here the code to access the database
+                                QuotationsDatabase.getInstance(getContext()).quotationDao().deleteAllQuotations();
+                                //adapter.removeAllQuotation();
+                            }
+                        }).start();
+                        adapter.removeAllQuotation();
+                        menu.setGroupVisible(R.id.items_to_hide, false);
+                    }
+                });
+
     }
 
     @Override
@@ -209,7 +229,8 @@ public class FavouriteFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item_delete_all_favourite) {
-            removeAllDialog(this.adapter);
+//            removeAllDialog(this.adapter);
+            (new DialogFragmentRemoveAll()).show(getChildFragmentManager(), null);
             return true;
         } else {
             return super.onOptionsItemSelected(item);

@@ -60,7 +60,7 @@ public class QuotationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_quotation, null);
+        view = inflater.inflate(R.layout.fragment_quotation, container, false);;
 
         textViewSample = view.findViewById(R.id.tw_greeting);
         textViewAuthor = view.findViewById(R.id.tw_author);
@@ -91,7 +91,7 @@ public class QuotationFragment extends Fragment {
         // Restful
         this.queue = Volley.newRequestQueue(getContext());
 
-        return inflater.inflate(R.layout.fragment_quotation, null);
+        return view;
     }
 
 
@@ -215,7 +215,7 @@ public class QuotationFragment extends Fragment {
                     @Override
                     public void onResponse(Quotation quotationResponse) {
                         displayQuotation(quotationResponse);
-                        //Toast.makeText(QuotationActivity.this, quotationResponse.getQuoteText(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), quotationResponse.getQuoteText(), Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -242,6 +242,7 @@ public class QuotationFragment extends Fragment {
         @Override
         public void run() {
 //            Handler handler = new Handler(Looper.getMainLooper());
+            String x = textViewSample.getText().toString();
             Quotation dbQuotation = QuotationsDatabase.getInstance(getContext()).quotationDao().getQuotation(textViewSample.getText().toString());
             try {
 //                Context context = reference.get().getActivity();

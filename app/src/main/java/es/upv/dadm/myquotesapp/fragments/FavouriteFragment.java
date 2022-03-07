@@ -1,11 +1,15 @@
 package es.upv.dadm.myquotesapp.fragments;
 
+import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE;
+import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -79,7 +83,47 @@ public class FavouriteFragment extends Fragment {
 
         recycler.setAdapter(adapter);
 
-        //findViewById(R.id.b_author_information).setOnClickListener(listener);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+
+                return makeFlag(ACTION_STATE_IDLE, ItemTouchHelper.RIGHT) | makeFlag(ACTION_STATE_SWIPE, ItemTouchHelper.RIGHT);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                Quotation quotation = adapter.getItem(viewHolder.getAdapterPosition());
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // Include here the code to access the database
+                        QuotationsDatabase.getInstance(getContext()).quotationDao().deleteQuotation(quotation);
+                        //adapter.removeQuotation(position);
+                    }
+                }).start();
+                adapter.removeQuotation(viewHolder.getAdapterPosition());
+            }
+
+            @Override
+            public boolean isLongPressDragEnabled() {
+                return false;
+            }
+
+            @Override
+            public boolean isItemViewSwipeEnabled() {
+                return true;
+            }
+
+        });
+
+        itemTouchHelper.attachToRecyclerView(recycler);
 
         return view;
     }

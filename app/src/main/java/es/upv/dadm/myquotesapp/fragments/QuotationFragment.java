@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -28,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.ref.WeakReference;
@@ -145,6 +147,8 @@ public class QuotationFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Snackbar snackbar;
+        CoordinatorLayout coordinatorLayout;
 
         if (item.getItemId() == R.id.item_new_quotation) {
             if (isConnected()) {
@@ -152,7 +156,10 @@ public class QuotationFragment extends Fragment {
                 this.newQuotationRequest();
                 swipeRefreshLayout.setRefreshing(true);
             } else {
-                Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), R.string.quotation_activity_toast_no_connection, Toast.LENGTH_SHORT).show();
+                coordinatorLayout = view.findViewById(R.id.coordinatorLayoutQuotation);
+                snackbar = Snackbar.make(coordinatorLayout, R.string.quotation_activity_toast_no_connection, Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
             return true;
         } else {
@@ -199,9 +206,14 @@ public class QuotationFragment extends Fragment {
     }
 
     public void displayQuotation(Quotation quotation) {
+        Snackbar snackbar;
+        CoordinatorLayout coordinatorLayout;
 
         if (quotation == null) {
-            Toast.makeText(getContext(), R.string.quotation_activity_toast_no_quote, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), R.string.quotation_activity_toast_no_quote, Toast.LENGTH_SHORT).show();
+            coordinatorLayout = view.findViewById(R.id.coordinatorLayoutQuotation);
+            snackbar = Snackbar.make(coordinatorLayout, R.string.quotation_activity_toast_no_quote, Snackbar.LENGTH_SHORT);
+            snackbar.show();
         } else {
             textViewSample.setText(quotation.getQuoteText());
             textViewAuthor.setText(quotation.getQuoteAuthor());

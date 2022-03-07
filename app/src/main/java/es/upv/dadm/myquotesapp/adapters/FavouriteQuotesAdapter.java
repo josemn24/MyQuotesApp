@@ -77,6 +77,15 @@ public class FavouriteQuotesAdapter extends RecyclerView.Adapter<FavouriteQuotes
         this.notifyItemRemoved(position);
     }
 
+    public void addItem(int position, Quotation quotation) {
+        listQuotes.add(position, quotation);
+    }
+
+    public void addQuotation(Quotation quotation, int position) {
+        addItem(position, quotation);
+        this.notifyItemInserted(position);
+    }
+
     public void removeAllQuotation() {
         int length = listQuotes.size();
         listQuotes.clear();

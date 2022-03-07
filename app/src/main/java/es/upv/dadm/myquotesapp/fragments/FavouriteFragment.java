@@ -6,6 +6,7 @@ import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -26,6 +27,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -109,6 +112,25 @@ public class FavouriteFragment extends Fragment {
                     }
                 }).start();
                 adapter.removeQuotation(viewHolder.getAdapterPosition());
+
+                CoordinatorLayout coordinatorLayout = view.findViewById(R.id.coordinatorLayoutFavourite);
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.favourite_snack_bar_deleted, Snackbar.LENGTH_SHORT);
+                snackbar.setAction(R.string.favourite_snack_bar_undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                      Code to execute when action is clicked
+                        new Thread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // Include here the code to access the database
+                                QuotationsDatabase.getInstance(getContext()).quotationDao().addQuotation(quotation);
+                            }
+                        }).start();
+                        adapter.addQuotation(quotation, position);
+                    }
+                });
+                snackbar.show();
             }
 
             @Override
@@ -160,15 +182,25 @@ public class FavouriteFragment extends Fragment {
     }
 
     public void redirectToWikipedia(Quotation quotation) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        String uri = "https://en.wikipedia.org/wiki/Special:Search?search=" + quotation.getQuoteAuthor();
-        intent.setData(Uri.parse(uri));
 
-        List<ResolveInfo> activities =
-                getContext().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (activities.size() > 0) {
-            startActivity(intent);
+        Snackbar snackbar;
+        CoordinatorLayout coordinatorLayout;
+
+        if (!quotation.getQuoteAuthor().isEmpty()) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            String uri = "https://en.wikipedia.org/wiki/Special:Search?search=" + quotation.getQuoteAuthor();
+            intent.setData(Uri.parse(uri));
+
+            List<ResolveInfo> activities =
+                    getContext().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            if (activities.size() > 0) {
+                startActivity(intent);
+            }
+        } else {
+            coordinatorLayout = view.findViewById(R.id.coordinatorLayoutFavourite);
+            snackbar = Snackbar.make(coordinatorLayout, R.string.favourite_snack_bar, Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
     }
 
@@ -201,26 +233,26 @@ public class FavouriteFragment extends Fragment {
     }
 
     public List<Quotation> getMockQuotations() {
-      List<Quotation> res = new ArrayList<Quotation>();
+        List<Quotation> res = new ArrayList<Quotation>();
 
-      res.add(new Quotation("Moral excellence comes about as a result of habit. We become just by doing just acts, temperate by doing temperate acts, brave by doing brave acts.", "Aristotle"));
-      res.add(new Quotation("There is nothing like returning to a place that remains unchanged to find the ways in which you yourself have altered.", "Nelson Mandela"));
-      res.add(new Quotation("My advice to you is not to inquire why or whither, but just enjoy your ice cream while its on your plate — that's my philosophy.", "Wilder"));
-      res.add(new Quotation("Be a yardstick of quality. Some people aren't used to an environment where excellence is expected.", "Stephen Jobs"));
-      res.add(new Quotation("The world is round and the place which may seem like the end may also be the beginning. ", "Ivy Baker Priest"));
-      res.add(new Quotation("Every problem has a gift for you in its hands. ", "Richard Bach"));
-      res.add(new Quotation("Happiness is the reward we get for living to the highest right we know. ", "Richard Bach"));
-      res.add(new Quotation("It isn't what happens to us that causes us to suffer; it's what we say to ourselves about what happens.", "Pema Chodron"));
-      res.add(new Quotation("Strength does not come from physical capacity. It comes from an indomitable will.", "Gandhi"));
-      res.add(new Quotation("You learn to speak by speaking, to study by studying, to run by running, to work by working; in just the same way, you learn to love by loving. ", "Anatole France"));
+        res.add(new Quotation("Moral excellence comes about as a result of habit. We become just by doing just acts, temperate by doing temperate acts, brave by doing brave acts.", "Aristotle"));
+        res.add(new Quotation("There is nothing like returning to a place that remains unchanged to find the ways in which you yourself have altered.", "Nelson Mandela"));
+        res.add(new Quotation("My advice to you is not to inquire why or whither, but just enjoy your ice cream while its on your plate — that's my philosophy.", "Wilder"));
+        res.add(new Quotation("Be a yardstick of quality. Some people aren't used to an environment where excellence is expected.", "Stephen Jobs"));
+        res.add(new Quotation("The world is round and the place which may seem like the end may also be the beginning. ", "Ivy Baker Priest"));
+        res.add(new Quotation("Every problem has a gift for you in its hands. ", "Richard Bach"));
+        res.add(new Quotation("Happiness is the reward we get for living to the highest right we know. ", "Richard Bach"));
+        res.add(new Quotation("It isn't what happens to us that causes us to suffer; it's what we say to ourselves about what happens.", "Pema Chodron"));
+        res.add(new Quotation("Strength does not come from physical capacity. It comes from an indomitable will.", "Gandhi"));
+        res.add(new Quotation("You learn to speak by speaking, to study by studying, to run by running, to work by working; in just the same way, you learn to love by loving. ", "Anatole France"));
 
-      return res;
+        return res;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         this.menu = menu;
-        if(this.adapter.getListQuotes().size() == 0){
+        if (this.adapter.getListQuotes().size() == 0) {
             menu.setGroupVisible(R.id.items_to_hide, false);
         }
         menuInflater.inflate(R.menu.favourite, menu);
@@ -266,20 +298,22 @@ public class FavouriteFragment extends Fragment {
         builder.create().show();
     }
 
-    private void setAdapterList(List<Quotation> list){
+    private void setAdapterList(List<Quotation> list) {
         this.adapter.setQuotations(list);
 
-        if(!list.isEmpty()){
+        if (!list.isEmpty()) {
             menu.setGroupVisible(R.id.items_to_hide, true);
         }
     }
 
     private class ThreadClass extends Thread {
         private final WeakReference<FavouriteFragment> reference;
+
         ThreadClass(FavouriteFragment fragment) {
             super();
             this.reference = new WeakReference<FavouriteFragment>(fragment);
         }
+
         @Override
         public void run() {
 //            Handler handler = new Handler(Looper.getMainLooper());
@@ -288,7 +322,7 @@ public class FavouriteFragment extends Fragment {
                 reference.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(reference.get() != null){
+                        if (reference.get() != null) {
                             reference.get().setAdapterList(list);
                         }
                     }

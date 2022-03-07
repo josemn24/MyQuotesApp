@@ -42,4 +42,7 @@
 
     <string name="quotation_activity_toast_no_quote">No ha sido posible obtener una nueva cita</string>
     <string name="quotation_activity_toast_no_connection">Sin conexión</string>
+    <string name="favourite_snack_bar">La acción no es posible</string>
+    <string name="favourite_snack_bar_undo">Deshacer</string>
+    <string name="favourite_snack_bar_deleted">Cita eliminada</string>
 </resources>

@@ -29,6 +29,9 @@
     <string name="settings_radio_post" translatable="false">POST</string>
 
     <string name="favourite_text_view_1">Author info</string>
+    <string name="favourite_snack_bar_deleted">Quotation deleted</string>
+    <string name="favourite_snack_bar">Action not possible</string>
+    <string name="favourite_snack_bar_undo">Undo</string>
 
     <string name="quotation_text_view_1">Hello %1s!\nPress Refresh to get a new quotation</string>
     <string name="quotation_text_view_2">Sample quotation %1$d</string>

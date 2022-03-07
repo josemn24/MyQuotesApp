@@ -81,7 +81,7 @@ public class FavouriteFragment extends Fragment {
 
         //findViewById(R.id.b_author_information).setOnClickListener(listener);
 
-        return inflater.inflate(R.layout.fragment_favourite, null);
+        return view;
     }
 
     @Override

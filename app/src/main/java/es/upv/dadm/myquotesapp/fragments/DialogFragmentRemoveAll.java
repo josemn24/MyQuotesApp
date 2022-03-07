@@ -23,7 +23,7 @@ public class DialogFragmentRemoveAll extends DialogFragment {
     public Dialog onCreateDialog(Bundle bundle) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
         builder.setIcon(android.R.drawable.stat_sys_warning);
-        builder.setMessage(R.string.favourite_dialog_message);
+        builder.setMessage(R.string.favourite_dialog_message_all);
         builder.setNegativeButton(android.R.string.no, null);
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
